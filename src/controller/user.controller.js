@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const bcrypt = require("bcrypt");
 const jwtToken = require("../helper/generateJWT");
+const cloudinary = require("../helper/cloudinary");
 
 const userController = {
 	// method
@@ -44,12 +45,13 @@ const userController = {
 			});
 	},
 
-	register: (req, res) => {
+	register: async (req, res) => {
 		try {
 			// tangkap data dari body
 			// const profile_pic = req.file.filename;
 			const id = uuidv4();
 			const { names, email, password, phone } = req.body;
+			const profile_pic = await cloudinary.uploader.upload(req.file.path);
 			bcrypt.hash(password, 10, (err, hash) => {
 				if (err) {
 					failed(res, err.message, "failed", "fail hash password");
@@ -62,7 +64,8 @@ const userController = {
 					phone,
 					password: hash,
 					level: 1,
-					profile_pic: req.file ? req.file.filename : "avatar.png",
+					profile_pic,
+					// profile_pic: req.file ? req.file.filename : "avatar.png",
 				};
 
 				userModel.checkEmail(email).then((result) => {
@@ -171,9 +174,10 @@ const userController = {
 		});
 	},
 
-	updateImage: (req, res) => {
+	updateImage: async (req, res) => {
 		const id_user = req.params.id_user;
-		const profile_pic = req.file.filename;
+		const profile_pic = await cloudinary.uploader.upload(req.file.path);
+		// const profile_pic = req.file.filename;
 		userModel
 			.updateImage(id_user, profile_pic)
 			.then((results) => {
