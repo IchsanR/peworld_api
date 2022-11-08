@@ -149,15 +149,15 @@ const userModel = {
 			);
 		});
 	},
-	updateImage: ({ id_user, profile_pic, profile_link }) => {
+	updateImage: ({ id_user, profile_pic, picture_link }) => {
 		return new Promise((resolve, reject) => {
 			db.query(
 				`
 			UPDATE users SET 
 			profile_pic = COALESCE ($1, profile_pic), 
-			profile_link = COALESCE ($2, profile_link), 
+			picture_link = COALESCE ($2, picture_link), 
 			WHERE id_user = $3`,
-				[id_user, profile_pic, profile_link],
+				[id_user, profile_pic, picture_link],
 				(err, res) => {
 					if (err) {
 						reject(err);

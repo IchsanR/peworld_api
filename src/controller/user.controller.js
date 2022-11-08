@@ -182,7 +182,7 @@ const userController = {
 		// const profile_pic = req.file.filename;
 		const data = {
 			profile_pic: profile_pic.original_filename,
-			profile_link: profile_pic.secure_url,
+			picture_link: profile_pic.secure_url,
 		};
 		userModel
 			.updateImage(id_user, data)
