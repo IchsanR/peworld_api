@@ -178,8 +178,9 @@ const userController = {
 
 	updateImage: async (req, res) => {
 		const id_user = req.params.id_user;
-		const profile_pic = await cloudinary.uploader.upload(req.file.path);
 		// const profile_pic = req.file.filename;
+		const profile_pic = await cloudinary.uploader.upload(req.file.path);
+		console.log(profile_pic);
 		const data = {
 			profile_pic: profile_pic.original_filename,
 			picture_link: profile_pic.secure_url,
