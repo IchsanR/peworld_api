@@ -45,13 +45,12 @@ const userController = {
 			});
 	},
 
-	register: async (req, res) => {
+	register: (req, res) => {
 		try {
 			// tangkap data dari body
 			// const profile_pic = req.file.filename;
 			const id = uuidv4();
 			const { names, email, password, phone } = req.body;
-			const profile_pic = await cloudinary.uploader.upload(req.file.path);
 			bcrypt.hash(password, 10, (err, hash) => {
 				if (err) {
 					failed(res, err.message, "failed", "fail hash password");
@@ -64,10 +63,13 @@ const userController = {
 					phone,
 					password: hash,
 					level: 1,
-					profile_pic,
+					profile_pic: req.file ? req.file.filename : "avatar.png",
+					picture_link:
+						"https://res.cloudinary.com/dhm4yjouq/image/upload/v1667927307/u9aetcgfmpnybyhudeao.jpg",
 					// profile_pic: req.file ? req.file.filename : "avatar.png",
 				};
 
+				console.log(data);
 				userModel.checkEmail(email).then((result) => {
 					if (result.rowCount == 0) {
 						userModel
@@ -178,8 +180,12 @@ const userController = {
 		const id_user = req.params.id_user;
 		const profile_pic = await cloudinary.uploader.upload(req.file.path);
 		// const profile_pic = req.file.filename;
+		const data = {
+			profile_pic: profile_pic.original_filename,
+			profile_link: profile_pic.secure_url,
+		};
 		userModel
-			.updateImage(id_user, profile_pic)
+			.updateImage(id_user, data)
 			.then((results) => {
 				res.json(results);
 			})
